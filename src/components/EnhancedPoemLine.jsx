@@ -50,15 +50,15 @@ export default function EnhancedPoemLine({
             x += (Math.random() - 0.5) * 0.3;
             y += (Math.random() - 0.5) * 0.3;
           }
-          // Color shift on glitch
+          // Color shift on glitch — fixed: use material.color, not child.children[0].color
           if (fade > 0 && Math.random() > 0.98) {
-            child.children[0].color.setRGB(
+            child.children[0].material.color.setRGB(
               Math.random(),
               Math.random(),
               Math.random()
             );
           } else {
-            child.children[0].color.set(color);
+            child.children[0].material.color.set(color);
           }
           y += (1 - fade) * 0.3;
           break;
@@ -68,7 +68,7 @@ export default function EnhancedPoemLine({
           const spiralRadius = (1 - fade) * 3;
           const spiralAngle = i * 0.3 + t * 2 - fade * 10;
           x += Math.cos(spiralAngle) * spiralRadius;
-          y += Math.sin(spiralAngle) * spiralRadius * 0.5 + position[1];
+          y += Math.sin(spiralAngle) * spiralRadius * 0.5; // fixed: removed + position[1]
           rotation = spiralAngle;
           scale = fade;
           break;
@@ -78,7 +78,7 @@ export default function EnhancedPoemLine({
           const explosionForce = (1 - fade) * 2;
           const angle = (i / letters.length) * Math.PI * 2;
           x += Math.cos(angle) * explosionForce;
-          y += Math.sin(angle) * explosionForce + position[1];
+          y += Math.sin(angle) * explosionForce; // fixed: removed + position[1]
           rotation = (1 - fade) * Math.PI * 2;
           scale = 0.5 + fade * 0.5;
           break;
@@ -86,7 +86,7 @@ export default function EnhancedPoemLine({
         case ANIMATION_STYLES.WAVE:
           // Wavy motion
           const waveOffset = i * 0.5;
-          y += Math.sin(t * 2 + waveOffset) * 0.2 * fade + position[1];
+          y += Math.sin(t * 2 + waveOffset) * 0.2 * fade; // fixed: removed + position[1]
           x += Math.cos(t * 1.5 + waveOffset) * 0.1;
           scale = 1 + Math.sin(t * 3 + waveOffset) * 0.1;
           break;
@@ -96,7 +96,7 @@ export default function EnhancedPoemLine({
           const letterDelay = i * 0.1;
           const letterAge = Math.max(0, fade - (1 - i / letters.length));
           opacity = Math.min(fade, letterAge * 5);
-          y += position[1] + (1 - opacity) * 0.5;
+          y += (1 - opacity) * 0.5; // fixed: removed position[1] +
           scale = 0.8 + opacity * 0.2;
           break;
 
@@ -105,12 +105,12 @@ export default function EnhancedPoemLine({
           const scatterX = Math.sin(i * 123.456) * 5;
           const scatterY = Math.cos(i * 789.012) * 5;
           x += scatterX * (1 - fade);
-          y += scatterY * (1 - fade) + position[1];
+          y += scatterY * (1 - fade); // fixed: removed + position[1]
           rotation = (1 - fade) * Math.PI * 4;
           break;
 
         default:
-          y += position[1] + (1 - fade) * 0.3;
+          y += (1 - fade) * 0.3; // fixed: removed position[1] +
       }
 
       child.position.set(x, y, z);
